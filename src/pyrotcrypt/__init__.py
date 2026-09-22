@@ -8,8 +8,8 @@ class Reader(Protocol):
     def readline(self) -> str: ...
 
 
-def run(argv: list[str], stdio: Reader, stdout: TextIO, stderr: TextIO) -> int:
-    while line := stdio.readline():
+def run(argv: list[str], stdin: Reader, stdout: TextIO, stderr: TextIO) -> int:
+    while line := stdin.readline():
         stdout.write(rot(line, 13))
     return 0
 
