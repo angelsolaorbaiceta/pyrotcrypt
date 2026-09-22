@@ -2,6 +2,7 @@ import argparse
 import sys
 from typing import Protocol, TextIO
 
+from pyrotcrypt.files import slurp
 from pyrotcrypt.rot import rot
 
 
@@ -21,13 +22,19 @@ parser.add_argument(
     dest="num",
     help="the number of positions to rotate each letter",
 )
+parser.add_argument("in_files", nargs="*", help="paths to files to be encrypted")
 
 
 def run(argv: list[str], stdin: Reader, stdout: TextIO, stderr: TextIO) -> int:
     args = parser.parse_args(argv)
+    num: int = args.num
+    in_files: list[str] = args.in_files
 
-    while line := stdin.readline():
-        stdout.write(rot(line, args.num))
+    if len(in_files) > 0:
+        stdout.writelines(rot(slurp(file), num) for file in in_files)
+    else:
+        while line := stdin.readline():
+            stdout.write(rot(line, num))
 
     return 0
 

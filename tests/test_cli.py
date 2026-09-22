@@ -1,4 +1,5 @@
 import io
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -31,4 +32,21 @@ def test_rot_with_num_arg(arg_name: str) -> None:
 
     assert code == 0
     assert stdout.getvalue() == "tcc\npof\n"
+    assert stderr.getvalue() == ""
+
+
+@patch("pyrotcrypt.slurp")
+def test_encrypt_files(slurp_stub: MagicMock) -> None:
+    """Calling pyrotcrypt <arg1> <arg2> expects the arguments to be file paths.
+    It reads their contents and encrypts their contenst.
+    """
+    contents = {"one.txt": "foo", "two.txt": "bar"}
+    slurp_stub.side_effect = lambda path: contents[path]
+
+    stdin, stdout, stderr = io.StringIO(), io.StringIO(), io.StringIO()
+
+    code = run(["one.txt", "two.txt"], stdin, stdout, stderr)
+
+    assert code == 0
+    assert stdout.getvalue() == "sbbone"
     assert stderr.getvalue() == ""
