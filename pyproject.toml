@@ -1,0 +1,22 @@
+[project]
+name = "pyrotcrypt"
+version = "0.1.0"
+description = "Encrypt and decrypt a text by rotating letters of the alphpabet."
+readme = "README.md"
+authors = [
+    { name = "angel", email = "gitsoor@proton.me" }
+]
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+pyrotcrypt = "pyrotcrypt:main"
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
