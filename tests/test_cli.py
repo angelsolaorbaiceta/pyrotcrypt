@@ -1,5 +1,7 @@
 import io
 
+import pytest
+
 from pyrotcrypt import run
 
 
@@ -17,14 +19,15 @@ def test_rot_without_args() -> None:
     assert stderr.getvalue() == ""
 
 
-def test_rot_with_num_arg() -> None:
+@pytest.mark.parametrize("arg_name", ["-n", "--num"])
+def test_rot_with_num_arg(arg_name: str) -> None:
     """Calling pyrotcrypt -n z<num> reads from stdin and writes to stdout, and
     rotates charactes as many times as given.
     """
     stdin = io.StringIO("foo\nbar\n")
     stdout, stderr = io.StringIO(), io.StringIO()
 
-    code = run(["-n", "14"], stdin, stdout, stderr)
+    code = run([arg_name, "14"], stdin, stdout, stderr)
 
     assert code == 0
     assert stdout.getvalue() == "tcc\npof\n"

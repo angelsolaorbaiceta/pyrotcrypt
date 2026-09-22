@@ -18,14 +18,17 @@ parser.add_argument(
     "--num",
     type=int,
     default=13,
+    dest="num",
     help="the number of positions to rotate each letter",
 )
 
 
 def run(argv: list[str], stdin: Reader, stdout: TextIO, stderr: TextIO) -> int:
     args = parser.parse_args(argv)
+
     while line := stdin.readline():
-        stdout.write(rot(line, args.n))
+        stdout.write(rot(line, args.num))
+
     return 0
 
 
