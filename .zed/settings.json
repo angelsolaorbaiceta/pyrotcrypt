@@ -1,0 +1,35 @@
+// Project-level Zed settings for pyrotcrypt.
+// See https://zed.dev/docs/configuring-zed for all options.
+{
+  // Activate the project's virtual environment in Zed's integrated terminal.
+  // Zed looks for the listed directories at the project root; if one exists
+  // (e.g. after `uv sync`), it runs the matching activation script for your shell.
+  // If none exists, the terminal opens normally with no error.
+  "terminal": {
+    "detect_venv": {
+      "on": {
+        "directories": [".venv"],
+        "activate_script": "default"
+      }
+    }
+  },
+
+  // Point the Python language servers at the same interpreter so completions,
+  // imports and diagnostics resolve against the synced .venv.
+  "lsp": {
+    "basedpyright": {
+      "settings": {
+        "python": {
+          "pythonPath": ".venv/bin/python"
+        }
+      }
+    },
+    "pyright": {
+      "settings": {
+        "python": {
+          "pythonPath": ".venv/bin/python"
+        }
+      }
+    }
+  }
+}
