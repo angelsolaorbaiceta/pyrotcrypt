@@ -33,4 +33,4 @@ def run(argv: list[str], stdin: Reader, stdout: TextIO, stderr: TextIO) -> int:
 
 
 def main() -> None:
-    sys.exit(run(sys.argv, sys.stdin, sys.stdout, sys.stderr))
+    sys.exit(run(sys.argv[1:], sys.stdin, sys.stdout, sys.stderr))
