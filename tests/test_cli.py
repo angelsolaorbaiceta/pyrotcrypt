@@ -1,6 +1,6 @@
 import io
 from collections.abc import Iterable
-from unittest.mock import MagicMock, patch
+from unittest.mock import ANY, MagicMock, patch
 
 import pytest
 
@@ -68,3 +68,44 @@ def test_decrypt_stdin(arg_name: str) -> None:
     assert code == 0
     assert stdout.getvalue() == "foo\nbar\n"
     assert stderr.getvalue() == ""
+
+
+@pytest.mark.parametrize(
+    ("args", "expected_filename", "expected_content"),
+    [
+        (["-w"], "cipher.rot13.txt", "sbb\none\n"),
+        (["--write"], "cipher.rot13.txt", "sbb\none\n"),
+        (["-w", "-n7"], "cipher.rot7.txt", "mvv\nihy\n"),
+        (["-w", "-d"], "plain.rot13.txt", "sbb\none\n"),
+        (["-w", "-d", "-n7"], "plain.rot7.txt", "yhh\nutk\n"),
+    ],
+)
+@patch("pyrotcrypt.write_file")
+def test_save_to_file_from_stdin(
+    write_file_mock: MagicMock,
+    args: list[str],
+    expected_filename: str,
+    expected_content: str,
+) -> None:
+    """When pyrotcrypt encrypts from stdin and it's passed the -w|--write flag,
+    it writes the output to a "cipher.rot<num>.txt" file. If the -d|--decrypt flag
+    is also passed, the output is written to "plain.rot<num>.txt".
+    """
+    stdin = io.StringIO("foo\nbar\n")
+    stdout, stderr = io.StringIO(), io.StringIO()
+
+    code = run(args, stdin, stdout, stderr)
+
+    assert code == 0
+    assert stdout.getvalue() == ""
+    assert stderr.getvalue() == ""
+
+    write_file_mock.assert_called_once_with(expected_filename, expected_content)
+
+
+def test_save_to_files() -> None:
+    """When pyrotcrypt encrypts from files and it's passed the -w|--write flag,
+    it writes the output of each file to <filename>.encrypted.rot<num>. If the
+    -d|--decrypt flag is passed, the output is written to <filename>.plantext.rot<num>.
+    """
+    pass
