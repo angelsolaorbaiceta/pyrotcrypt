@@ -1,4 +1,5 @@
 import io
+from collections.abc import Iterable
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -20,15 +21,17 @@ def test_rot_without_args() -> None:
     assert stderr.getvalue() == ""
 
 
-@pytest.mark.parametrize("arg_name", ["-n", "--num"])
-def test_rot_with_num_arg(arg_name: str) -> None:
+@pytest.mark.parametrize(
+    "args", [("-n", "14"), ("-n14",), ("--num", "14"), ("--num=14",)]
+)
+def test_rot_with_num_arg(args: Iterable[str]) -> None:
     """Calling pyrotcrypt -n z<num> reads from stdin and writes to stdout, and
     rotates charactes as many times as given.
     """
     stdin = io.StringIO("foo\nbar\n")
     stdout, stderr = io.StringIO(), io.StringIO()
 
-    code = run([arg_name, "14"], stdin, stdout, stderr)
+    code = run([*args], stdin, stdout, stderr)
 
     assert code == 0
     assert stdout.getvalue() == "tcc\npof\n"
@@ -49,4 +52,19 @@ def test_encrypt_files(slurp_stub: MagicMock) -> None:
 
     assert code == 0
     assert stdout.getvalue() == "sbbone"
+    assert stderr.getvalue() == ""
+
+
+@pytest.mark.parametrize("arg_name", ["-d", "--decrypt"])
+def test_decrypt_stdin(arg_name: str) -> None:
+    """Calling pyrotcrypt -d|--decrypt rotates characters in the opposite
+    direction to decrypt cyphertexts.
+    """
+    stdin = io.StringIO("tcc\npof\n")
+    stdout, stderr = io.StringIO(), io.StringIO()
+
+    code = run([arg_name, "-n14"], stdin, stdout, stderr)
+
+    assert code == 0
+    assert stdout.getvalue() == "foo\nbar\n"
     assert stderr.getvalue() == ""
