@@ -28,7 +28,7 @@ parser.add_argument(
     default=False,
     action="store_true",
     dest="decrypt",
-    help="decrypt the ciphertext",
+    help="decrypt the ciphertext (instead of encrypting the plaintext)",
 )
 parser.add_argument(
     "in_files", nargs="*", help="paths to files to be encrypted/decrypted"
