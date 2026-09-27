@@ -54,11 +54,18 @@ def run(argv: list[str], stdin: Reader, stdout: TextIO, stderr: TextIO) -> int:
         num = rotleft_equivalent(num)
 
     if len(in_files) > 0:
-        stdout.writelines(rot(slurp(file), num) for file in in_files)
+        if write_files:
+            for file in in_files:
+                filename = f"{file.removesuffix('.txt')}.{'plain' if decrypt else 'cipher'}.rot{args.num}.txt"
+                content = rot(slurp(file), num)
+                write_file(filename, content)
+        else:
+            stdout.writelines(rot(slurp(file), num) for file in in_files)
     else:
         if write_files:
+            filename = f"{'plain' if decrypt else 'cipher'}.rot{args.num}.txt"
             content = rot("".join(list(iter(stdin.readline, ""))), num)
-            write_file(f"{'plain' if decrypt else 'cipher'}.rot{args.num}.txt", content)
+            write_file(filename, content)
         else:
             while line := stdin.readline():
                 stdout.write(rot(line, num))
