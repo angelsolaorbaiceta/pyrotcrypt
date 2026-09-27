@@ -1,9 +1,12 @@
 import argparse
 import sys
+from importlib.metadata import version
 from typing import Protocol, TextIO
 
 from pyrotcrypt.files import slurp, write_file
 from pyrotcrypt.rot import normalize_rotnum, rot, rotleft_equivalent
+
+__version__ = version("pyrotcrypt")
 
 
 class Reader(Protocol):
@@ -37,6 +40,9 @@ parser.add_argument(
     action="store_true",
     dest="write_files",
     help="write cyperthext to files (instead of stdout)",
+)
+parser.add_argument(
+    "-v", "--version", action="version", version=f"%(prog)s {__version__}"
 )
 parser.add_argument(
     "in_files", nargs="*", help="paths to files to be encrypted/decrypted"

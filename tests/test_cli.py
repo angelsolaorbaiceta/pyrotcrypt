@@ -1,4 +1,5 @@
 import io
+import re
 from collections.abc import Iterable
 from unittest.mock import ANY, MagicMock, patch
 
