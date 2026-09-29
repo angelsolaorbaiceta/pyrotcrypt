@@ -3,6 +3,14 @@
 A CLI to encrypt and decrypt text using [Caesar's cipher](https://en.wikipedia.org/wiki/Caesar_cipher).
 (Don't use it to encrypt secrets, only for fun!)
 
+# Installation
+
+Using uv:
+
+```bash
+$ uv tool install pyrotcrypt
+```
+
 # Usage
 
 Encrypt text from stdin, using the default 13 rotations:
